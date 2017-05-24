@@ -66,8 +66,10 @@ public class MyPainter extends View {
         if(operation.equals("rotate")){
             mCanvas.rotate(30,mCanvas.getWidth()/2,mCanvas.getHeight()/2);
         }
-        else if(operation.equals("move"))
-            mCanvas.translate(10,10);
+        else if(operation.equals("move")) {
+            sx += 10;
+            sy += 10;
+        }
         else if(operation.equals("scale")){
             mCanvas.scale(1.5f,1.5f);
             sx= (int)(cx / 1.5 - (width /2)) ;sy=(int)(cy / 1.5- (height /2));
@@ -81,11 +83,6 @@ public class MyPainter extends View {
         if(op.equals("save")) this.command = op;
         else if(op.equals("clear")) this.command = op;
         else if(op.equals("open")) this.command = op;
-        else if(op.equals("bluring")) this.option = op;
-        else if(op.equals("coloring")) this.option = op;
-        else if(op.equals("nofilter")) this.option = op;
-        else if(op.equals("big")) this.option =op;
-        else if(op.equals("small")) this.option =op;
         else if(op.equals("blue")) this.option = op;
         else if(op.equals("red")) this.option = op;
         else {this.operation = op; IsSelected = true;}
@@ -108,7 +105,6 @@ public class MyPainter extends View {
     @Override
     protected void onDraw(Canvas canvas) {
         super.onDraw(canvas);
-
         if(IsChecked) {
             if(!IsSelected){
                 drawStamp();
@@ -116,12 +112,10 @@ public class MyPainter extends View {
                 mCanvas.restore();}
             else{
                 IsSelected = false;
-
             }
         }
-
         if(command.equals("clear")) {
-            mBitmap.eraseColor(Color.parseColor("#fdf39a"));
+            mBitmap.eraseColor(Color.WHITE);
         }
         if(command.equals("save")){
 
@@ -131,10 +125,10 @@ public class MyPainter extends View {
 
         if(command.equals("open")){
             Toast.makeText(getContext(),"OPEN",Toast.LENGTH_SHORT).show();
-            Bitmap storedImg = BitmapFactory.decodeFile("/data/data/comwow2778.naver.blog.app15/img.jpg");
+            Bitmap storedImg = BitmapFactory.decodeFile(path+"img.jpg");
 
             if(storedImg !=null){
-                mBitmap.eraseColor(Color.parseColor("#fdf39a"));
+                mBitmap.eraseColor(Color.WHITE);
                 int width = storedImg.getWidth();
                 int height = storedImg.getHeight();
 
@@ -147,23 +141,6 @@ public class MyPainter extends View {
             else Toast.makeText(getContext(),"저장된 파일이 없습니다",Toast.LENGTH_SHORT).show();
         }
 
-        if(option.equals("bluring")){
-            BlurMaskFilter blur = new BlurMaskFilter(50,BlurMaskFilter.Blur.OUTER);
-            mPaint.setMaskFilter(blur);
-        }
-        if(option.equals("coloring")){
-            float[] matrix_array = {
-                    2f, 0f, 0f, 0f, -25f,
-                    0f, 2f, 0f, 0f, -25f,
-                    0f, 0f, 2f, 0f, -25f,
-                    0f, 0f, 0f, 1f, 0f
-            };
-            ColorMatrix matrix = new ColorMatrix(matrix_array);
-            mPaint.setColorFilter(new ColorMatrixColorFilter(matrix));
-        }
-        if(option.equals("nofilter")){
-            mPaint.reset();
-        }
         if(option.equals("big")) {mPaint.setStrokeWidth(5);}
         if(option.equals("small")) mPaint.setStrokeWidth(3);
         if(option.equals("red")) mPaint.setColor(Color.RED);
@@ -171,6 +148,43 @@ public class MyPainter extends View {
         command="";
         option="";
         canvas.drawBitmap(mBitmap,0,0,null);
+    }
+
+
+    public void setBlurring(boolean tf){
+        if(tf) {
+            BlurMaskFilter blur = new BlurMaskFilter(100, BlurMaskFilter.Blur.NORMAL);
+            mPaint.setMaskFilter(blur);
+        }
+        else{
+            mPaint.setMaskFilter(null);
+        }
+    }
+
+    public void setColoring(boolean tf){
+        if(tf) {
+            float[] array = {
+                    2, 0, 0, 0, -25f,
+                    0, 2, 0, 0, -25f,
+                    0, 0, 2, 0, -25f,
+                    0, 0, 0, 2, 0
+            };
+
+            ColorMatrix colorMatrix = new ColorMatrix(array);
+            ColorMatrixColorFilter filter = new ColorMatrixColorFilter(colorMatrix);
+            mPaint.setColorFilter(filter);
+        }
+        else{
+            mPaint.setColorFilter(null);
+        }
+    }
+
+    public void setPenWidth(int size){
+        if(size==5)
+            mPaint.setStrokeWidth(5);
+        else{
+            mPaint.setStrokeWidth(3);
+        }
     }
 
     int oldx = -1; int oldy = -1;

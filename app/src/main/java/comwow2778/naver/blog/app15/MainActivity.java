@@ -13,9 +13,6 @@ import android.widget.CompoundButton;
 public class MainActivity extends AppCompatActivity {
     CheckBox checkBox;
     MyPainter mypainter;
-    int check = 0;
-    int check_blur = 0;
-    int check_color = 0;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -46,37 +43,33 @@ public class MainActivity extends AppCompatActivity {
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         if (item.getItemId() == 1) {
-            check_blur++;
-            if (check_blur % 2 == 1) {
-                mypainter.setOperation("bluring");
-                item.setChecked(true);
-            } else {
-                mypainter.setOperation("nofilter");
+            if (item.isChecked()) {
                 item.setChecked(false);
+                mypainter.setBlurring(false);
+            } else {
+                item.setChecked(true);
+                mypainter.setBlurring(true);
             }
 
         }
         else if (item.getItemId() == 2) {
-            check_color++;
-            if (check_color % 2 == 1) {
-                item.setChecked(true);
-                mypainter.setOperation("coloring");
-
-            } else {
-                mypainter.setOperation("nofilter");
+            if (item.isChecked()) {
                 item.setChecked(false);
+                mypainter.setColoring(false);
+            } else {
+                item.setChecked(true);
+                mypainter.setColoring(true);
             }
 
         }
         else if (item.getItemId() == 3) {
-            check++;
-            if (check % 2 == 1) {
-                item.setChecked(true);
-                mypainter.setOperation("big");
-            } else {
-                item.setChecked(false);
-                mypainter.setOperation("small");
-            }
+            if (item.isChecked()) {
+            mypainter.setPenWidth(3);
+            item.setChecked(false);
+        } else {
+            mypainter.setPenWidth(5);
+            item.setChecked(true);
+         }
         }
         else if (item.getItemId() == 4) {
             mypainter.setOperation("red");
@@ -85,19 +78,6 @@ public class MainActivity extends AppCompatActivity {
             mypainter.setOperation("blue");
         }
         return super.onOptionsItemSelected(item);
-    }
-
-    public String getExternalPath() {
-        String sdPath = "";
-        String ext = Environment.getExternalStorageState();
-        if (ext.equals(Environment.MEDIA_MOUNTED)) {
-            sdPath = Environment.getExternalStorageDirectory().getAbsolutePath() +
-                    "/";
-            //sdPath = "/mnt/sdcard/";
-        } else
-            sdPath = getFilesDir() + "";
-        //Toast.makeText(this, sdPath, Toast.LENGTH_SHORT).show();
-        return sdPath;
     }
 
 
